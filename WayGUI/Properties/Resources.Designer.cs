@@ -116,6 +116,36 @@ namespace WayGUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could only initalize NAND1!
+        ///NAND0 failed with: {0}.
+        /// </summary>
+        internal static string ErrorInitNAND0FailedNAND1OK {
+            get {
+                return ResourceManager.GetString("ErrorInitNAND0FailedNAND1OK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could only initalize NAND0!
+        ///NAND1 failed with: {0}.
+        /// </summary>
+        internal static string ErrorInitNAND1FailedNAND0OK {
+            get {
+                return ResourceManager.GetString("ErrorInitNAND1FailedNAND0OK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not initalize NAND0: {0}
+        ///Could not initalize NAND1: {1}.
+        /// </summary>
+        internal static string ErrorInitNANDFailed {
+            get {
+                return ResourceManager.GetString("ErrorInitNANDFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ERROR.
         /// </summary>
         internal static string ErrorTitle {

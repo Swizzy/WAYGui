@@ -39,9 +39,19 @@
         }
 
         internal static bool CheckIfWayDeviceArrived(ref Message m) {
+#if DEBUG
+            Program.Mainform.AddOutput("Device change occured (checking params)...\r\n");
+#endif
             if (m.WParam.ToInt32() != 0x8000 || m.LParam == IntPtr.Zero)
                 return false;
+#if DEBUG
+            Program.Mainform.AddOutput("Device arrival detected...\r\n");
+#endif
             var hdr = (DevBroadcastDeviceInterfaceBuffer)Marshal.PtrToStructure(m.LParam, typeof(DevBroadcastDeviceInterfaceBuffer));
+#if DEBUG
+            if (hdr.dbch_devicetype == 3)
+                Program.Mainform.AddOutput("Device has Serial Port...\r\n");
+#endif
             return hdr.dbch_devicetype == 3;
         }
 

@@ -13,6 +13,7 @@
     public sealed partial class MainForm : Form {
         private string[] _ports;
         private static bool _protect = true, _initialized;
+        private static bool _initNAND0, _initNAND1;
         private bool _allowErase;
 
         [Flags] private enum MemoryDevice {
@@ -79,7 +80,10 @@
         private void ProcOut(object sender, PythonHandler.EventArg<string> arg) {
             if (Regex.IsMatch(arg.Data, "^[0-9]* KB / [0-9]+ KB"))
                 return;
-            OutputBox.AppendText(arg.Data);
+            AddOutput(arg.Data);
+        }
+        public void AddOutput(string text) {
+            OutputBox.AppendText(text);
             OutputBox.Select(OutputBox.Text.Length, 0);
             OutputBox.ScrollToCaret();
         }
@@ -592,27 +596,52 @@
             }
             var mem = ((ComboBoxItem<MemoryDevice>)memory.SelectedItem).Value;
             string args;
-            switch (mem)
-            {
+            switch (mem) {
                 case MemoryDevice.NOR:
                     args = string.Format("NORway.py {0}", port);
                     break;
                 case MemoryDevice.NAND0:
+                    args = string.Format("NANDWay.py {0} 0", port);
+                    break;
                 case MemoryDevice.NAND1:
+                    args = string.Format("NANDWay.py {0} 1", port);
+                    break;
                 case MemoryDevice.NANDAuto:
                     args = string.Format("NANDWay.py {0}", port);
-                    break;
+                    var res = new int[2];
+                    res[0] = PythonHandler.StartProcess(string.Format("{0} 0", args));
+                    res[1] = PythonHandler.StartProcess(string.Format("{0} 1", args));
+                    _initNAND0 = false;
+                    _initNAND1 = false;
+                    if (res[0] == 0)
+                        _initNAND0 = true;
+                    if (res[1] == 0)
+                        _initNAND1 = true;
+                    else if (res[0] == 0 && res[1] != 0)
+                        MessageBox.Show(string.Format(Resources.ErrorInitNAND1FailedNAND0OK, res[1]));
+                    else if (res[0] != 0 && res[1] == 0)
+                        MessageBox.Show(string.Format(Resources.ErrorInitNAND0FailedNAND1OK, res[0]));
+                    else
+                        MessageBox.Show(string.Format(Resources.ErrorInitNANDFailed, res[0], res[1]));
+                    _initialized = _initNAND0 && _initNAND1;
+                    return;
                 default:
                     return;
             }
             SetAppState(true);
             var ret = PythonHandler.StartProcess(args);
-            if (ret == 0)
-                _initialized = true;
-            else
-            {
-                MessageBox.Show(string.Format(Resources.ErrorInitFailed, ret));
-                _initialized = false;
+            switch (ret) {
+                case 0:
+                    _initialized = true;
+                    if (mem == MemoryDevice.NAND0)
+                        _initNAND0 = true;
+                    if (mem == MemoryDevice.NAND1)
+                        _initNAND1 = true;
+                    break;
+                default:
+                    MessageBox.Show(string.Format(Resources.ErrorInitFailed, ret));
+                    _initialized = false;
+                    break;
             }
             SetAppState(false);
         }

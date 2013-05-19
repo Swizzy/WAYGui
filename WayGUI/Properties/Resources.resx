@@ -221,4 +221,16 @@
   <data name="LinkHomebrewConnection" xml:space="preserve">
     <value>http://www.homebrew-connection.org/</value>
   </data>
+  <data name="ErrorInitNAND1FailedNAND0OK" xml:space="preserve">
+    <value>Could only initalize NAND0!
+NAND1 failed with: {0}</value>
+  </data>
+  <data name="ErrorInitNAND0FailedNAND1OK" xml:space="preserve">
+    <value>Could only initalize NAND1!
+NAND0 failed with: {0}</value>
+  </data>
+  <data name="ErrorInitNANDFailed" xml:space="preserve">
+    <value>Could not initalize NAND0: {0}
+Could not initalize NAND1: {1}</value>
+  </data>
 </root>
