@@ -47,6 +47,7 @@
             this.verifynor = new System.Windows.Forms.ToolStripMenuItem();
             this.NANDInfo = new System.Windows.Forms.ToolStripMenuItem();
             this.KillPython = new System.Windows.Forms.ToolStripMenuItem();
+            this.clearlog = new System.Windows.Forms.ToolStripMenuItem();
             this.donateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -54,7 +55,6 @@
             this.hclink = new System.Windows.Forms.ToolStripStatusLabel();
             this.colinklabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.OutputBox = new WayGUI.CustomControls.ThreadSafeRichTextBox();
             this.logstrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.saveLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsbox = new System.Windows.Forms.GroupBox();
@@ -75,6 +75,7 @@
             this.dumpcount = new System.Windows.Forms.NumericUpDown();
             this.label8 = new System.Windows.Forms.Label();
             this.bw = new System.ComponentModel.BackgroundWorker();
+            this.OutputBox = new WayGUI.CustomControls.ThreadSafeRichTextBox();
             this.operationsbox.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -188,7 +189,8 @@
             this.selectNORwaypyNANDWaypyPathToolStripMenuItem,
             this.verifynor,
             this.NANDInfo,
-            this.KillPython});
+            this.KillPython,
+            this.clearlog});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
             this.toolsToolStripMenuItem.Text = "Tools";
@@ -197,8 +199,8 @@
             // 
             this.switchprotectmode.Name = "switchprotectmode";
             this.switchprotectmode.Size = new System.Drawing.Size(286, 22);
-            this.switchprotectmode.Text = "Disable Protection";
-            this.switchprotectmode.Click += new System.EventHandler(this.SwitchProtectionMode);
+            this.switchprotectmode.Text = "Disable Address Correction";
+            this.switchprotectmode.Click += new System.EventHandler(this.SwitchAddressCorrectionMode);
             // 
             // switchEraseMode
             // 
@@ -245,6 +247,14 @@
             this.KillPython.Text = "Kill Python (Fixes Deadlock)";
             this.KillPython.Click += new System.EventHandler(this.KillPythonClick);
             // 
+            // clearlog
+            // 
+            this.clearlog.Enabled = false;
+            this.clearlog.Name = "clearlog";
+            this.clearlog.Size = new System.Drawing.Size(286, 22);
+            this.clearlog.Text = "Clear Log";
+            this.clearlog.Click += new System.EventHandler(this.ClearlogClick);
+            // 
             // donateToolStripMenuItem
             // 
             this.donateToolStripMenuItem.Name = "donateToolStripMenuItem";
@@ -282,7 +292,7 @@
             // hclink
             // 
             this.hclink.Name = "hclink";
-            this.hclink.Size = new System.Drawing.Size(260, 17);
+            this.hclink.Size = new System.Drawing.Size(276, 17);
             this.hclink.Spring = true;
             this.hclink.Text = "www.homebrew-connection.org";
             this.hclink.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -291,7 +301,7 @@
             // colinklabel
             // 
             this.colinklabel.Name = "colinklabel";
-            this.colinklabel.Size = new System.Drawing.Size(260, 17);
+            this.colinklabel.Size = new System.Drawing.Size(276, 17);
             this.colinklabel.Spring = true;
             this.colinklabel.Text = "www.consoleopen.com";
             this.colinklabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -307,24 +317,6 @@
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Output Console";
-            // 
-            // OutputBox
-            // 
-            this.OutputBox.BackColor = System.Drawing.Color.Black;
-            this.OutputBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.OutputBox.ContextMenuStrip = this.logstrip;
-            this.OutputBox.Cursor = System.Windows.Forms.Cursors.Default;
-            this.OutputBox.DetectUrls = false;
-            this.OutputBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.OutputBox.ForeColor = System.Drawing.Color.Green;
-            this.OutputBox.Location = new System.Drawing.Point(3, 16);
-            this.OutputBox.MaximumSize = new System.Drawing.Size(537, 237);
-            this.OutputBox.Name = "OutputBox";
-            this.OutputBox.ReadOnly = true;
-            this.OutputBox.Size = new System.Drawing.Size(537, 237);
-            this.OutputBox.TabIndex = 0;
-            this.OutputBox.Text = "";
-            this.OutputBox.WordWrap = false;
             // 
             // logstrip
             // 
@@ -571,6 +563,24 @@
             this.bw.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BWDoWork);
             this.bw.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BWRunWorkerCompleted);
             // 
+            // OutputBox
+            // 
+            this.OutputBox.BackColor = System.Drawing.Color.Black;
+            this.OutputBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.OutputBox.ContextMenuStrip = this.logstrip;
+            this.OutputBox.Cursor = System.Windows.Forms.Cursors.Default;
+            this.OutputBox.DetectUrls = false;
+            this.OutputBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.OutputBox.ForeColor = System.Drawing.Color.Green;
+            this.OutputBox.Location = new System.Drawing.Point(3, 16);
+            this.OutputBox.MaximumSize = new System.Drawing.Size(537, 237);
+            this.OutputBox.Name = "OutputBox";
+            this.OutputBox.ReadOnly = true;
+            this.OutputBox.Size = new System.Drawing.Size(537, 237);
+            this.OutputBox.TabIndex = 0;
+            this.OutputBox.Text = "";
+            this.OutputBox.WordWrap = false;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -650,6 +660,7 @@
         private System.Windows.Forms.ContextMenuStrip logstrip;
         private System.Windows.Forms.ToolStripMenuItem saveLogToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem KillPython;
+        private System.Windows.Forms.ToolStripMenuItem clearlog;
     }
 }
 

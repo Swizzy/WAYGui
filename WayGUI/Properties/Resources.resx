@@ -123,11 +123,11 @@
   <data name="SelectMemory" xml:space="preserve">
     <value>Please select a memory device to work with!</value>
   </data>
-  <data name="ProtectionDisable" xml:space="preserve">
-    <value>Disable Protection</value>
+  <data name="AddressCorrectionDisable" xml:space="preserve">
+    <value>Disable Address Correction</value>
   </data>
-  <data name="ProtectionEnable" xml:space="preserve">
-    <value>Enable Protection</value>
+  <data name="AddressCorrectionEnable" xml:space="preserve">
+    <value>Enable Address Correction</value>
   </data>
   <data name="EraseDisable" xml:space="preserve">
     <value>Disable Erase</value>

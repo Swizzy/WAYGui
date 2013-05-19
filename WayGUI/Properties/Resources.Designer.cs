@@ -61,6 +61,24 @@ namespace WayGUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Disable Address Correction.
+        /// </summary>
+        internal static string AddressCorrectionDisable {
+            get {
+                return ResourceManager.GetString("AddressCorrectionDisable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable Address Correction.
+        /// </summary>
+        internal static string AddressCorrectionEnable {
+            get {
+                return ResourceManager.GetString("AddressCorrectionEnable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Disable Erase.
         /// </summary>
         internal static string EraseDisable {
@@ -259,24 +277,6 @@ namespace WayGUI.Properties {
         internal static string NotFoundPython {
             get {
                 return ResourceManager.GetString("NotFoundPython", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Disable Protection.
-        /// </summary>
-        internal static string ProtectionDisable {
-            get {
-                return ResourceManager.GetString("ProtectionDisable", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enable Protection.
-        /// </summary>
-        internal static string ProtectionEnable {
-            get {
-                return ResourceManager.GetString("ProtectionEnable", resourceCulture);
             }
         }
         

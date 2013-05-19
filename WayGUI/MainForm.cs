@@ -12,7 +12,7 @@
 
     public sealed partial class MainForm : Form {
         private string[] _ports;
-        private static bool _protect = true, _initialized;
+        private static bool _addressCorrection = true, _initialized;
         private static bool _initNAND0, _initNAND1;
         private bool _allowErase;
 
@@ -86,6 +86,7 @@
             OutputBox.AppendText(text);
             OutputBox.Select(OutputBox.Text.Length, 0);
             OutputBox.ScrollToCaret();
+            clearlog.Enabled = true;
         }
 
         private void SetAppState(bool busy) {
@@ -113,6 +114,8 @@
             _ports = SerialPort.GetPortNames();
             if (comports.Items.Count == _ports.Length)
                 return;
+            if (_ports.Length > comports.Items.Count && !scan)
+                scan = true;
             comports.DataSource = _ports;
             if (comports.Items.Count > 0 && scan) {
                 DeviceControl.SetNORWayPort();
@@ -655,11 +658,11 @@
             bw.RunWorkerAsync(args);
         }
 
-        private void SwitchProtectionMode(object sender, EventArgs e) {
-            switchprotectmode.Text = !_protect
-                                         ? Resources.ProtectionDisable
-                                         : Resources.ProtectionEnable;
-            _protect = !_protect;
+        private void SwitchAddressCorrectionMode(object sender, EventArgs e) {
+            switchprotectmode.Text = !_addressCorrection
+                                         ? Resources.AddressCorrectionDisable
+                                         : Resources.AddressCorrectionEnable;
+            _addressCorrection = !_addressCorrection;
         }
 
         private void SwitchEraseAllowed(object sender, EventArgs e) {
@@ -670,7 +673,7 @@
 
         private static int FixAddress(int address) {
             var overload = address % 0x20000;
-            if (overload > 0 && _protect) {
+            if (overload > 0 && _addressCorrection) {
                 if (((address * 0x10)) % 0x20000 == 0) {
                     Program.Mainform.OutputBox.AppendText(string.Format("{2}Address corrected from: 0x{0:X} to 0x{1:X}{2}", address, address * 0x10, Environment.NewLine));
                     return address*0x10;
@@ -764,5 +767,9 @@
         }
 
         private void HclinkClick(object sender, EventArgs e) { Process.Start(Resources.LinkHomebrewConnection); }
+
+        private void ClearlogClick(object sender, EventArgs e) { 
+            OutputBox.Text = ""; 
+            clearlog.Enabled = false; }
     }
 }
