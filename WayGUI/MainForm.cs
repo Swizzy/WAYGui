@@ -111,10 +111,12 @@
 
         private void UpdatePorts(bool scan = true) {
             _ports = SerialPort.GetPortNames();
+            if (comports.Items.Count == _ports.Length)
+                return;
             comports.DataSource = _ports;
             if (comports.Items.Count > 0 && scan) {
                 DeviceControl.SetNORWayPort();
-                if (comports.SelectedIndex < comports.Items.Count) 
+                if (comports.SelectedIndex < comports.Items.Count)
                     comports.SelectedIndex = 0;
             }
             else if (scan)

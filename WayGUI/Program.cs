@@ -5,6 +5,7 @@ namespace WayGUI
 {
     using System.ComponentModel;
     using System.IO;
+    using System.Security.Principal;
     using WayGUI.Properties;
 
     static class Program
@@ -67,6 +68,14 @@ namespace WayGUI
             else {
                 MessageBox.Show(Resources.SelectNORwayAndNANDWayInTools);
             }
+        }
+
+        internal static bool IsAdmin() {
+            var identity = WindowsIdentity.GetCurrent();
+            if (identity == null)
+                return false;
+            var principal = new WindowsPrincipal(identity);
+            return principal.IsInRole(WindowsBuiltInRole.Administrator);
         }
     }
 }

@@ -10,7 +10,8 @@
     static class DeviceControl
     {
         public static void SetNORWayPort() {
-            ThreadPool.QueueUserWorkItem(s => GetPorts());
+            if (!Program.IsAdmin())
+                ThreadPool.QueueUserWorkItem(s => GetPorts());
         }
 
         private static void GetPorts() {
@@ -40,7 +41,7 @@
 
         internal static bool CheckIfWayDeviceArrived(ref Message m) {
 #if DEBUG
-            Program.Mainform.AddOutput("Device change occured (checking params)...\r\n");
+            Program.Mainform.AddOutput(string.Format("Device change occured (WParam: 0x{0:X}, LParam = 0x{1:X})...\r\n", (int)m.WParam, (int)m.LParam));
 #endif
             if (m.WParam.ToInt32() != 0x8000 || m.LParam == IntPtr.Zero)
                 return false;
@@ -49,8 +50,7 @@
 #endif
             var hdr = (DevBroadcastDeviceInterfaceBuffer)Marshal.PtrToStructure(m.LParam, typeof(DevBroadcastDeviceInterfaceBuffer));
 #if DEBUG
-            if (hdr.dbch_devicetype == 3)
-                Program.Mainform.AddOutput("Device has Serial Port...\r\n");
+            Program.Mainform.AddOutput(hdr.dbch_devicetype == 3 ? "Device is Serial Port...\r\n" : string.Format("Device is of type: {0}\r\n", hdr.dbch_devicetype));
 #endif
             return hdr.dbch_devicetype == 3;
         }
