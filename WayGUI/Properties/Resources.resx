@@ -233,4 +233,7 @@ NAND0 failed with: {0}</value>
     <value>Could not initalize NAND0: {0}
 Could not initalize NAND1: {1}</value>
   </data>
+  <data name="PS3InitMessage" xml:space="preserve">
+    <value>If you are working on a PS3 (most likely you are) You should now turn it on before doing anything else</value>
+  </data>
 </root>

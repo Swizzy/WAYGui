@@ -1,5 +1,6 @@
 ﻿namespace WayGUI
 {
+    using System.Drawing;
     using System.Text.RegularExpressions;
     using System.Windows.Forms;
     using System;
@@ -73,7 +74,7 @@
 #endif
             PythonHandler.Error += ProcOut;
             PythonHandler.Output += ProcOut;
-            Icon = System.Drawing.Icon.ExtractAssociatedIcon(Application.ExecutablePath);
+            Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
             DeviceControl.SetUpReceive(Handle);
         }
 
@@ -612,6 +613,7 @@
                     args = string.Format("NANDWay.py {0} 1", port);
                     break;
                 case MemoryDevice.NANDAuto:
+                    SetAppState(true);
                     args = string.Format("NANDWay.py {0}", port);
                     var res = new int[2];
                     res[0] = PythonHandler.StartProcess(string.Format("{0} 0", args));
@@ -629,6 +631,9 @@
                     else
                         MessageBox.Show(string.Format(Resources.ErrorInitNANDFailed, res[0], res[1]));
                     _initialized = _initNAND0 && _initNAND1;
+                    if (_initialized)
+                        MessageBox.Show(Resources.PS3InitMessage);
+                    SetAppState(false);
                     return;
                 default:
                     return;
@@ -648,6 +653,8 @@
                     _initialized = false;
                     break;
             }
+            if (_initialized)
+                MessageBox.Show(Resources.PS3InitMessage);
             SetAppState(false);
         }
 
@@ -771,5 +778,9 @@
         private void ClearlogClick(object sender, EventArgs e) { 
             OutputBox.Text = ""; 
             clearlog.Enabled = false; }
+
+        private void OutgroupboxResize(object sender, EventArgs e) {
+            OutputBox.MaximumSize = new Size(outgroupbox.Size.Width - 6, outgroupbox.Size.Height - 19);
+        }
     }
 }

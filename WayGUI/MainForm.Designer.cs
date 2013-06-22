@@ -54,7 +54,7 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.hclink = new System.Windows.Forms.ToolStripStatusLabel();
             this.colinklabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.outgroupbox = new System.Windows.Forms.GroupBox();
             this.logstrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.saveLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsbox = new System.Windows.Forms.GroupBox();
@@ -79,7 +79,7 @@
             this.operationsbox.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
-            this.groupBox1.SuspendLayout();
+            this.outgroupbox.SuspendLayout();
             this.logstrip.SuspendLayout();
             this.settingsbox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.noradressbox)).BeginInit();
@@ -307,16 +307,20 @@
             this.colinklabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.colinklabel.Click += new System.EventHandler(this.ColinklabelClick);
             // 
-            // groupBox1
+            // outgroupbox
             // 
-            this.groupBox1.Controls.Add(this.OutputBox);
-            this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox1.Location = new System.Drawing.Point(12, 207);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(543, 256);
-            this.groupBox1.TabIndex = 1;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Output Console";
+            this.outgroupbox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.outgroupbox.Controls.Add(this.OutputBox);
+            this.outgroupbox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.outgroupbox.Location = new System.Drawing.Point(12, 207);
+            this.outgroupbox.Name = "outgroupbox";
+            this.outgroupbox.Size = new System.Drawing.Size(543, 256);
+            this.outgroupbox.TabIndex = 1;
+            this.outgroupbox.TabStop = false;
+            this.outgroupbox.Text = "Output Console";
+            this.outgroupbox.Resize += new System.EventHandler(this.OutgroupboxResize);
             // 
             // logstrip
             // 
@@ -588,7 +592,7 @@
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
             this.ClientSize = new System.Drawing.Size(567, 488);
             this.Controls.Add(this.settingsbox);
-            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.outgroupbox);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.operationsbox);
             this.Controls.Add(this.menuStrip1);
@@ -601,7 +605,7 @@
             this.menuStrip1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
+            this.outgroupbox.ResumeLayout(false);
             this.logstrip.ResumeLayout(false);
             this.settingsbox.ResumeLayout(false);
             this.settingsbox.PerformLayout();
@@ -625,7 +629,7 @@
         private System.Windows.Forms.Button write;
         private System.Windows.Forms.Button releasebtn;
         private System.Windows.Forms.Button erasenorbtn;
-        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox outgroupbox;
         private System.Windows.Forms.Button patchbtn;
         private System.Windows.Forms.GroupBox settingsbox;
         private System.Windows.Forms.NumericUpDown dumpcount;

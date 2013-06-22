@@ -10,7 +10,7 @@
     static class DeviceControl
     {
         public static void SetNORWayPort() {
-            if (!Program.IsAdmin())
+            if (Program.IsAdmin())
                 ThreadPool.QueueUserWorkItem(s => GetPorts());
         }
 

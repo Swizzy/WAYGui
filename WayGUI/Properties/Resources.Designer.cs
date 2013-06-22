@@ -281,6 +281,15 @@ namespace WayGUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to If you are working on a PS3 (most likely you are) You should now turn it on before doing anything else.
+        /// </summary>
+        internal static string PS3InitMessage {
+            get {
+                return ResourceManager.GetString("PS3InitMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select Diff file to use.
         /// </summary>
         internal static string SelectDiffFileToUse {
