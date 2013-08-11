@@ -1,208 +1,193 @@
-﻿namespace WayGUI
-{
-	using System;
-	using System.Reflection;
-	using System.Windows.Forms;
+﻿namespace WayGUI {
+    using System;
+    using System.Reflection;
+    using System.Windows.Forms;
 
-	public class FolderSelectDialog
-	{
-		readonly OpenFileDialog _ofd;
-		const string DefaultFilter = "Folders|\n";
+    public class FolderSelectDialog {
+        private const string DefaultFilter = "Folders|\n";
+        private readonly OpenFileDialog _ofd;
 
-		public FolderSelectDialog()
-		{
-			_ofd = new OpenFileDialog {
-				Filter = DefaultFilter,
-				AddExtension = false,
-				CheckFileExists = false,
-				DereferenceLinks = true,
-			};
-		}
+        public FolderSelectDialog() {
+            _ofd = new OpenFileDialog {
+                                      Filter = DefaultFilter, AddExtension = false, CheckFileExists = false, DereferenceLinks = true,
+                                      };
+        }
 
-		#region Properties
+        #region Properties
 
-		public string InitialDirectory
-		{
-			get { return _ofd.InitialDirectory; }
-			set { _ofd.InitialDirectory = string.IsNullOrEmpty(value) ? Environment.CurrentDirectory : value; }
-		}
+        public string InitialDirectory {
+            get { return _ofd.InitialDirectory; }
+            set { _ofd.InitialDirectory = string.IsNullOrEmpty(value) ? Environment.CurrentDirectory : value; }
+        }
 
-		public string Title
-		{
-			get { return _ofd.Title; }
-			set { _ofd.Title = value ?? "Select a folder"; }
-		}
+        public string Title {
+            get { return _ofd.Title; }
+            set { _ofd.Title = value ?? "Select a folder"; }
+        }
 
-		public string FileName
-		{
-			get { return _ofd.FileName; }
-			set { _ofd.FileName = value; }
-		}
+        public string FileName {
+            get { return _ofd.FileName; }
+            set { _ofd.FileName = value; }
+        }
 
-		#endregion
+        #endregion
 
-		#region Methods
+        #region Methods
 
-		public bool ShowDialog()
-		{
-			return ShowDialog(IntPtr.Zero);
-		}
+        public bool ShowDialog() {
+            return ShowDialog(IntPtr.Zero);
+        }
 
-		private bool ShowDialog(IntPtr hWndOwner)
-		{
-			bool flag;
-			if (Environment.OSVersion.Version.Major >= 6)
-			{
-				var r = new Reflector("System.Windows.Forms");
+        private bool ShowDialog(IntPtr hWndOwner) {
+            bool flag;
+            if(Environment.OSVersion.Version.Major >= 6) {
+                var r = new Reflector("System.Windows.Forms");
 
-				uint num = 0;
-				var typeIFileDialog = r.GetType("FileDialogNative.IFileDialog");
-				var dialog = Reflector.Call(_ofd, "CreateVistaDialog");
-				Reflector.Call(_ofd, "OnBeforeVistaDialog", dialog);
+                uint num = 0;
+                var typeIFileDialog = r.GetType("FileDialogNative.IFileDialog");
+                var dialog = Reflector.Call(_ofd, "CreateVistaDialog");
+                Reflector.Call(_ofd, "OnBeforeVistaDialog", dialog);
 
-				var options = (uint)Reflector.CallAs(typeof(FileDialog), _ofd, "GetOptions");
-				options |= (uint)r.GetEnum("FileDialogNative.FOS", "FOS_PICKFOLDERS");
-				Reflector.CallAs(typeIFileDialog, dialog, "SetOptions", options);
+                var options = (uint) Reflector.CallAs(typeof(FileDialog), _ofd, "GetOptions");
+                options |= (uint) r.GetEnum("FileDialogNative.FOS", "FOS_PICKFOLDERS");
+                Reflector.CallAs(typeIFileDialog, dialog, "SetOptions", options);
 
-				var pfde = r.New("FileDialog.VistaDialogEvents", _ofd);
-				var parameters = new[] { pfde, num };
-				Reflector.CallAs2(typeIFileDialog, dialog, "Advise", parameters);
-				num = (uint)parameters[1];
-				try
-				{
-					var num2 = (int)Reflector.CallAs(typeIFileDialog, dialog, "Show", hWndOwner);
-					flag = 0 == num2;
-				}
-				finally
-				{
-					Reflector.CallAs(typeIFileDialog, dialog, "Unadvise", num);
-					GC.KeepAlive(pfde);
-				}
-			}
-			else
-			{
-				var fbd = new FolderBrowserDialog {
-													  Description = Title,
-													  SelectedPath = InitialDirectory
-												  };
-				if (fbd.ShowDialog(new WindowWrapper(hWndOwner)) != DialogResult.OK)
-					return false;
-				_ofd.FileName = fbd.SelectedPath;
-				return true;
-			}
+                var pfde = r.New("FileDialog.VistaDialogEvents", _ofd);
+                var parameters = new[] {
+                                       pfde, num
+                                       };
+                Reflector.CallAs2(typeIFileDialog, dialog, "Advise", parameters);
+                num = (uint) parameters[1];
+                try {
+                    var num2 = (int) Reflector.CallAs(typeIFileDialog, dialog, "Show", hWndOwner);
+                    flag = 0 == num2;
+                }
+                finally {
+                    Reflector.CallAs(typeIFileDialog, dialog, "Unadvise", num);
+                    GC.KeepAlive(pfde);
+                }
+            }
+            else {
+                var fbd = new FolderBrowserDialog {
+                                                  Description = Title, SelectedPath = InitialDirectory
+                                                  };
+                if(fbd.ShowDialog(new WindowWrapper(hWndOwner)) != DialogResult.OK)
+                    return false;
+                _ofd.FileName = fbd.SelectedPath;
+                return true;
+            }
 
-			return flag;
-		}
+            return flag;
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 
-	public class WindowWrapper : IWin32Window
-	{
-		public WindowWrapper(IntPtr handle) {
-			_hwnd = handle;
-		}
-		public IntPtr Handle {
-			get { return _hwnd; }
-		}
+    public class WindowWrapper : IWin32Window {
+        private readonly IntPtr _hwnd;
 
-		private readonly IntPtr _hwnd;
-	}
+        public WindowWrapper(IntPtr handle) {
+            _hwnd = handle;
+        }
 
-	public class Reflector
-	{
-		#region variables
+        #region IWin32Window Members
 
-		readonly string _mNs;
-		readonly Assembly _mAsmb;
+        public IntPtr Handle {
+            get { return _hwnd; }
+        }
 
-		#endregion
+        #endregion
+    }
 
-		#region Constructors
+    public class Reflector {
+        #region variables
 
-		public Reflector(string ns)
-			: this(ns, ns)
-		{ }
+        private readonly Assembly _mAsmb;
+        private readonly string _mNs;
 
-		public Reflector(string an, string ns)
-		{
-			_mNs = ns;
-			_mAsmb = null;
-			foreach (var aN in Assembly.GetExecutingAssembly().GetReferencedAssemblies())
-			{
-				if (!aN.FullName.StartsWith(an))
-					continue;
-				_mAsmb = Assembly.Load(aN);
-				break;
-			}
-		}
+        #endregion
 
-		#endregion
+        #region Constructors
 
-		#region Methods
+        public Reflector(string ns) : this(ns, ns) {
+        }
 
-		public Type GetType(string typeName)
-		{
-			Type type = null;
-			var names = typeName.Split('.');
+        public Reflector(string an, string ns) {
+            _mNs = ns;
+            _mAsmb = null;
+            foreach(var aN in Assembly.GetExecutingAssembly().GetReferencedAssemblies()) {
+                if(!aN.FullName.StartsWith(an))
+                    continue;
+                _mAsmb = Assembly.Load(aN);
+                break;
+            }
+        }
 
-			if (names.Length > 0)
-				type = _mAsmb.GetType(_mNs + "." + names[0]);
+        #endregion
 
-			for (var i = 1; i < names.Length; ++i) {
-				if (type != null)
-					type = type.GetNestedType(names[i], BindingFlags.NonPublic);
-			}
-			return type;
-		}
+        #region Methods
 
-		public object New(string name, params object[] parameters)
-		{
-			var type = GetType(name);
+        public Type GetType(string typeName) {
+            Type type = null;
+            var names = typeName.Split('.');
 
-			var ctorInfos = type.GetConstructors();
-			foreach (var ci in ctorInfos) {
-				try {
-					return ci.Invoke(parameters);
-				} catch { }
-			}
+            if(names.Length > 0)
+                type = _mAsmb.GetType(_mNs + "." + names[0]);
 
-			return null;
-		}
+            for(var i = 1; i < names.Length; ++i) {
+                if(type != null)
+                    type = type.GetNestedType(names[i], BindingFlags.NonPublic);
+            }
+            return type;
+        }
 
-		public static object Call(object obj, string func, params object[] parameters) {
-			return Call2(obj, func, parameters);
-		}
+        public object New(string name, params object[] parameters) {
+            var type = GetType(name);
 
-		private static object Call2(object obj, string func, object[] parameters) {
-			return CallAs2(obj.GetType(), obj, func, parameters);
-		}
+            var ctorInfos = type.GetConstructors();
+            foreach(var ci in ctorInfos) {
+                try {
+                    return ci.Invoke(parameters);
+                }
+                catch {
+                }
+            }
 
-		public static object CallAs(Type type, object obj, string func, params object[] parameters) {
-			return CallAs2(type, obj, func, parameters);
-		}
+            return null;
+        }
 
-		public static object CallAs2(Type type, object obj, string func, object[] parameters) {
-			var methInfo = type.GetMethod(func, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-			return methInfo.Invoke(obj, parameters);
-		}
+        public static object Call(object obj, string func, params object[] parameters) {
+            return Call2(obj, func, parameters);
+        }
 
-		public object Get(object obj, string prop) {
-			return GetAs(obj.GetType(), obj, prop);
-		}
+        private static object Call2(object obj, string func, object[] parameters) {
+            return CallAs2(obj.GetType(), obj, func, parameters);
+        }
 
-		private static object GetAs(IReflect type, object obj, string prop) {
-			var propInfo = type.GetProperty(prop, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-			return propInfo.GetValue(obj, null);
-		}
+        public static object CallAs(Type type, object obj, string func, params object[] parameters) {
+            return CallAs2(type, obj, func, parameters);
+        }
 
-		public object GetEnum(string typeName, string name) {
-			var type = GetType(typeName);
-			var fieldInfo = type.GetField(name);
-			return fieldInfo.GetValue(null);
-		}
+        public static object CallAs2(Type type, object obj, string func, object[] parameters) {
+            var methInfo = type.GetMethod(func, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            return methInfo.Invoke(obj, parameters);
+        }
 
-		#endregion
+        public object Get(object obj, string prop) {
+            return GetAs(obj.GetType(), obj, prop);
+        }
 
-	}
+        private static object GetAs(IReflect type, object obj, string prop) {
+            var propInfo = type.GetProperty(prop, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            return propInfo.GetValue(obj, null);
+        }
+
+        public object GetEnum(string typeName, string name) {
+            var type = GetType(typeName);
+            var fieldInfo = type.GetField(name);
+            return fieldInfo.GetValue(null);
+        }
+
+        #endregion
+    }
 }

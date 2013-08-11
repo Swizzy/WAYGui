@@ -1,15 +1,15 @@
-﻿namespace WayGUI
-{
-    class ComboBoxItem<T>
-    {
+﻿namespace WayGUI {
+    internal class ComboBoxItem<T> {
         public readonly T Value;
-        readonly string _displayName;
+        private readonly string _displayName;
 
         public ComboBoxItem(T value, string displayName) {
             Value = value;
             _displayName = displayName;
         }
 
-        public override string ToString() { return _displayName; }
+        public override string ToString() {
+            return _displayName;
+        }
     }
 }

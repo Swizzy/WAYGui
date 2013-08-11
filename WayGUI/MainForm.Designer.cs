@@ -1,8 +1,9 @@
 ﻿namespace WayGUI
 {
     using System;
+    using WayGUI.CustomControls;
 
-    sealed partial class MainForm
+    internal sealed partial class MainForm
     {
         /// <summary>
         /// Required designer variable.
@@ -32,7 +33,6 @@
         {
             this.components = new System.ComponentModel.Container();
             this.operationsbox = new System.Windows.Forms.GroupBox();
-            this.patchbtn = new System.Windows.Forms.Button();
             this.releasebtn = new System.Windows.Forms.Button();
             this.initbtn = new System.Windows.Forms.Button();
             this.erasenorbtn = new System.Windows.Forms.Button();
@@ -76,6 +76,7 @@
             this.label8 = new System.Windows.Forms.Label();
             this.bw = new System.ComponentModel.BackgroundWorker();
             this.OutputBox = new WayGUI.CustomControls.ThreadSafeRichTextBox();
+            this.loadingCircle1 = new LoadingCircle();
             this.operationsbox.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -90,7 +91,7 @@
             // 
             // operationsbox
             // 
-            this.operationsbox.Controls.Add(this.patchbtn);
+            this.operationsbox.Controls.Add(this.loadingCircle1);
             this.operationsbox.Controls.Add(this.releasebtn);
             this.operationsbox.Controls.Add(this.initbtn);
             this.operationsbox.Controls.Add(this.erasenorbtn);
@@ -103,22 +104,12 @@
             this.operationsbox.TabStop = false;
             this.operationsbox.Text = "Operations";
             // 
-            // patchbtn
-            // 
-            this.patchbtn.Enabled = false;
-            this.patchbtn.Location = new System.Drawing.Point(472, 19);
-            this.patchbtn.Name = "patchbtn";
-            this.patchbtn.Size = new System.Drawing.Size(65, 47);
-            this.patchbtn.TabIndex = 4;
-            this.patchbtn.Text = "Patch";
-            this.patchbtn.UseVisualStyleBackColor = true;
-            // 
             // releasebtn
             // 
             this.releasebtn.Enabled = false;
-            this.releasebtn.Location = new System.Drawing.Point(359, 19);
+            this.releasebtn.Location = new System.Drawing.Point(350, 19);
             this.releasebtn.Name = "releasebtn";
-            this.releasebtn.Size = new System.Drawing.Size(107, 47);
+            this.releasebtn.Size = new System.Drawing.Size(101, 47);
             this.releasebtn.TabIndex = 3;
             this.releasebtn.Text = "Release/Reset";
             this.releasebtn.UseVisualStyleBackColor = true;
@@ -128,7 +119,7 @@
             // 
             this.initbtn.Location = new System.Drawing.Point(6, 19);
             this.initbtn.Name = "initbtn";
-            this.initbtn.Size = new System.Drawing.Size(84, 47);
+            this.initbtn.Size = new System.Drawing.Size(75, 47);
             this.initbtn.TabIndex = 2;
             this.initbtn.Text = "Initalize";
             this.initbtn.UseVisualStyleBackColor = true;
@@ -137,7 +128,7 @@
             // erasenorbtn
             // 
             this.erasenorbtn.Enabled = false;
-            this.erasenorbtn.Location = new System.Drawing.Point(278, 19);
+            this.erasenorbtn.Location = new System.Drawing.Point(269, 19);
             this.erasenorbtn.Name = "erasenorbtn";
             this.erasenorbtn.Size = new System.Drawing.Size(75, 47);
             this.erasenorbtn.TabIndex = 2;
@@ -148,7 +139,7 @@
             // write
             // 
             this.write.Enabled = false;
-            this.write.Location = new System.Drawing.Point(187, 19);
+            this.write.Location = new System.Drawing.Point(178, 19);
             this.write.Name = "write";
             this.write.Size = new System.Drawing.Size(85, 47);
             this.write.TabIndex = 1;
@@ -159,7 +150,7 @@
             // readbtn
             // 
             this.readbtn.Enabled = false;
-            this.readbtn.Location = new System.Drawing.Point(96, 19);
+            this.readbtn.Location = new System.Drawing.Point(87, 19);
             this.readbtn.Name = "readbtn";
             this.readbtn.Size = new System.Drawing.Size(85, 47);
             this.readbtn.TabIndex = 0;
@@ -585,6 +576,21 @@
             this.OutputBox.Text = "";
             this.OutputBox.WordWrap = false;
             // 
+            // loadingCircle1
+            // 
+            this.loadingCircle1.Active = false;
+            this.loadingCircle1.Color = System.Drawing.Color.Black;
+            this.loadingCircle1.InnerCircleRadius = 8;
+            this.loadingCircle1.Location = new System.Drawing.Point(457, 19);
+            this.loadingCircle1.Name = "loadingCircle1";
+            this.loadingCircle1.NumberSpoke = 10;
+            this.loadingCircle1.OuterCircleRadius = 20;
+            this.loadingCircle1.RotationSpeed = 100;
+            this.loadingCircle1.Size = new System.Drawing.Size(80, 47);
+            this.loadingCircle1.SpokeThickness = 2;
+            this.loadingCircle1.TabIndex = 4;
+            this.loadingCircle1.Text = "loading";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -598,7 +604,6 @@
             this.Controls.Add(this.menuStrip1);
             this.Name = "MainForm";
             this.Text = "NORWay & NANDWay GUI {0}.{1} {2}";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainFormFormClosing);
             this.Load += new System.EventHandler(this.Form1Load);
             this.operationsbox.ResumeLayout(false);
             this.menuStrip1.ResumeLayout(false);
@@ -630,7 +635,6 @@
         private System.Windows.Forms.Button releasebtn;
         private System.Windows.Forms.Button erasenorbtn;
         private System.Windows.Forms.GroupBox outgroupbox;
-        private System.Windows.Forms.Button patchbtn;
         private System.Windows.Forms.GroupBox settingsbox;
         private System.Windows.Forms.NumericUpDown dumpcount;
         private System.Windows.Forms.Label label8;
@@ -665,6 +669,7 @@
         private System.Windows.Forms.ToolStripMenuItem saveLogToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem KillPython;
         private System.Windows.Forms.ToolStripMenuItem clearlog;
+        private LoadingCircle loadingCircle1;
     }
 }
 

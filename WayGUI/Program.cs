@@ -1,78 +1,65 @@
-﻿using System;
-using System.Windows.Forms;
-
-namespace WayGUI
-{
+﻿namespace WayGUI {
+    using System;
     using System.ComponentModel;
     using System.IO;
     using System.Security.Principal;
+    using System.Windows.Forms;
     using WayGUI.Properties;
 
-    static class Program
-    {
+    internal static class Program {
         internal static MainForm Mainform;
-        
-        [STAThread] static void Main() {
+
+        [STAThread] private static void Main() {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Mainform = new MainForm();
-            if (!RegistryStuff.GetPythonPath(out PythonHandler.PythonPath))
+            if(!RegistryStuff.GetPythonPath(out PythonHandler.PythonPath))
                 GetPythonPath();
-            if (!RegistryStuff.GetScriptDirectory(out PythonHandler.WorkingDirectory))
+            if(!RegistryStuff.GetScriptDirectory(out PythonHandler.WorkingDirectory))
                 GetScriptDir();
             Application.Run(Mainform);
         }
 
         internal static void GetPythonPath() {
             var ofd = new OpenFileDialog {
-                                             AddExtension = true,
-                                             DefaultExt = "exe",
-                                             FileName = "python.exe",
-                                             Filter = Resources.FilterExe,
-                                             Title = Resources.SelectPythonPath
+                                         AddExtension = true, DefaultExt = "exe", FileName = "python.exe", Filter = Resources.FilterExe, Title = Resources.SelectPythonPath
                                          };
             ofd.FileOk += delegate(object sender, CancelEventArgs args) {
-                var fileName = Path.GetFileName(ofd.FileName);
-                if (fileName == null || !fileName.Equals("python.exe", StringComparison.CurrentCultureIgnoreCase))
-                    args.Cancel = true;
-            };
-            if (ofd.ShowDialog() == DialogResult.OK)
+                              var fileName = Path.GetFileName(ofd.FileName);
+                              if(fileName == null || !fileName.Equals("python.exe", StringComparison.CurrentCultureIgnoreCase))
+                                  args.Cancel = true;
+                          };
+            if(ofd.ShowDialog() == DialogResult.OK)
                 PythonHandler.PythonPath = ofd.FileName;
-            else {
+            else
                 MessageBox.Show(Resources.SelectPythonPathInTools);
-            }
         }
 
         internal static void GetScriptDir() {
             var ofd = new OpenFileDialog {
-                                             AddExtension = true,
-                                             DefaultExt = "py",
-                                             FileName = "NORway.py",
-                                             Filter = Resources.FilterPy,
-                                             Title = Resources.SelectNORwayOrNANDWay
+                                         AddExtension = true, DefaultExt = "py", FileName = "NORway.py", Filter = Resources.FilterPy, Title = Resources.SelectNORwayOrNANDWay
                                          };
             ofd.FileOk += delegate(object sender, CancelEventArgs args) {
-                var path = Path.GetDirectoryName(ofd.FileName);
-                if (path == null)
-                    args.Cancel = true;
-                if (!File.Exists(path + "\\NORway.py"))
-                    args.Cancel = true;
-                if (!File.Exists(path + "\\NANDway.py"))
-                    args.Cancel = true;
-            };
-            if (ofd.ShowDialog() == DialogResult.OK) {
+                              var path = Path.GetDirectoryName(ofd.FileName);
+                              if(path == null)
+                                  args.Cancel = true;
+                              if(!File.Exists(path + "\\NORway.py"))
+                                  args.Cancel = true;
+                              if(!File.Exists(path + "\\NANDway.py"))
+                                  args.Cancel = true;
+                          };
+            if(ofd.ShowDialog() == DialogResult.OK) {
                 PythonHandler.WorkingDirectory = Path.GetDirectoryName(ofd.FileName);
-                if (!RegistryStuff.SaveScriptDirectory(PythonHandler.WorkingDirectory))
+                if(!RegistryStuff.SaveScriptDirectory(PythonHandler.WorkingDirectory))
                     MessageBox.Show(Resources.ErrorWhileSavingScriptPath, Resources.ErrorTitle, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            else {
+            else
                 MessageBox.Show(Resources.SelectNORwayAndNANDWayInTools);
-            }
         }
 
         internal static bool IsAdmin() {
             var identity = WindowsIdentity.GetCurrent();
-            if (identity == null)
+            if(identity == null)
                 return false;
             var principal = new WindowsPrincipal(identity);
             return principal.IsInRole(WindowsBuiltInRole.Administrator);
