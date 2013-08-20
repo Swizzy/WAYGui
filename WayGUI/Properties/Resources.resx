@@ -154,7 +154,7 @@
     <value>Please Select NORway.py &amp; NANDWay.py Path in the tools menu!</value>
   </data>
   <data name="SelectSaveDump" xml:space="preserve">
-    <value>Select where to save yor dump</value>
+    <value>Select where to save your dump</value>
   </data>
   <data name="SelectSaveDumps" xml:space="preserve">
     <value>Select where to save your dumps</value>
@@ -207,7 +207,7 @@
 </value>
   </data>
   <data name="FilterDiff" xml:space="preserve">
-    <value>Diff Files|*.diff|All Files|*.*</value>
+    <value>Diff Files|*.diff;*.txt|All Files|*.*</value>
   </data>
   <data name="SelectDiffFileToUse" xml:space="preserve">
     <value>Select Diff file to use</value>

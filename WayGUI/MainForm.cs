@@ -39,7 +39,7 @@
             AddOutput(arg.Data);
         }
 
-        public void AddOutput(string text) {
+        private void AddOutput(string text) {
             OutputBox.AppendText(text);
             OutputBox.Select(OutputBox.Text.Length, 0);
             OutputBox.ScrollToCaret();
@@ -77,7 +77,7 @@
         private void Form1Load(object sender, EventArgs e) {
             UpdatePorts();
             memory.Items.AddRange(new object[] {
-                                               new ComboBoxItem<MemoryDevice>(MemoryDevice.NOR, "NOR"), new ComboBoxItem<MemoryDevice>(MemoryDevice.NAND0, "NAND 0"), new ComboBoxItem<MemoryDevice>(MemoryDevice.NAND1, "NAND 1"), new ComboBoxItem<MemoryDevice>(MemoryDevice.NANDAuto, "NAND 0 & 1 (0 -> 1)")
+                                               new ComboBoxItem<MemoryDevice>(MemoryDevice.NOR, "NOR"), new ComboBoxItem<MemoryDevice>(MemoryDevice.NAND0, "NAND 0"), new ComboBoxItem<MemoryDevice>(MemoryDevice.NAND0, "Signal Booster Edition"), new ComboBoxItem<MemoryDevice>(MemoryDevice.NAND1, "NAND 1"), new ComboBoxItem<MemoryDevice>(MemoryDevice.NANDAuto, "NAND 0 & 1 (0 -> 1)")
                                                });
             memory.SelectedIndex = 0;
         }
@@ -109,15 +109,14 @@
                         var ofd = new OpenFileDialog {
                                                      Title = Resources.SelectDiffFileToUse, FileName = string.Format("{0}.diff", Path.GetFileNameWithoutExtension(args.Src)), Filter = Resources.FilterDiff
                                                      };
-                        if(ofd.ShowDialog() != DialogResult.OK) {
-                            if(args.Offset >= 0) {
-                                if(args.Length > 0)
-                                    return string.Format("{0}write \"{1}\" 0x{2:X} 0x{3:X}", sendargs, args.Src, args.Offset, args.Length);
-                                return args.Offset > 0 ? string.Format("{0}write \"{1}\" 0x{2:X}", sendargs, args.Src, args.Offset) : string.Format("{0}write \"{1}\"", sendargs, args.Src);
-                            }
-                        }
-                        else
-                            return string.Format("{0}writediff \"{1}\" \"{2}\"", sendargs, args.Src, ofd.FileName);
+                        if(ofd.ShowDialog() == DialogResult.OK)
+                            return string.Format("{0}diffwrite \"{1}\" \"{2}\"", sendargs, args.Src, ofd.FileName);
+                    }
+                    if (args.Offset >= 0)
+                    {
+                        if (args.Length > 0)
+                            return string.Format("{0}write \"{1}\" 0x{2:X} 0x{3:X}", sendargs, args.Src, args.Offset, args.Length);
+                        return args.Offset > 0 ? string.Format("{0}write \"{1}\" 0x{2:X}", sendargs, args.Src, args.Offset) : string.Format("{0}write \"{1}\"", sendargs, args.Src);
                     }
                     break;
                 case MemoryDevice.NOR:
@@ -129,9 +128,9 @@
                         sendargs = string.Format("{0}write \"{1}\"", sendargs, args.Src);
                     if(args.Address > 0)
                         sendargs += string.Format(" 0x{0:X}", args.Address);
-                    break;
+                    return sendargs;
             }
-            return sendargs;
+            throw new InvalidOperationException("Woops, you found a bug!");
         }
 
         private void BWDoWork(object sender, DoWorkEventArgs e) {
@@ -250,7 +249,7 @@
                                 #region NAND Auto
 
                             case MemoryDevice.NANDAuto:
-                                sendargs = baseArgs + "{0} dump \"" + args.Src + "\"";
+                                sendargs = string.Format("{0}{{0}} dump \"{1}\"", baseArgs, args.Src);
                                 if(args.Offset != 0) {
                                     sendargs += string.Format(" {0:X}", args.Offset);
                                     if(args.Length != 0)
